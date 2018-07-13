@@ -65,7 +65,6 @@ class SWoleServer {
     const response = messageSender(replyController)
     if (!message) return response({type: "error", body: "Malformed Message"})
     if (!message.hasOwnProperty('type')) return response({type: "error", body: "Message Type Missing"})
-    console.log({message})
     if (message.type === 'connect') {
       this.registerClient(replyController, response)
     } else if (message.type === 'heartbeat') {
