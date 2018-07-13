@@ -81,12 +81,14 @@ class SWoleServer {
   registerClient(controller, response) {
     if (this.clients.hasOwnProperty(controller.id)) {
       this.disconnect(controller, "Already Connected!")
-      controller.send = message => this.send(controller, message)
-      this.eventListeners.connection.forEach(listener => listener(controller))
       return false
     } else {
       this.clients[controller.id] = controller
       this.lastHeartbeats[controller.id] = Date.now()
+      controller.send = message => this.send(controller, message)
+      this.eventListeners.connection.forEach(listener => listener(controller))
+      controller.send({type: 'connected'})
+
       return true
     }
   }
