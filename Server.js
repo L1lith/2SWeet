@@ -85,7 +85,7 @@ class SWoleServer {
     } else {
       this.clients[controller.id] = controller
       this.lastHeartbeats[controller.id] = Date.now()
-      controller.send = message => this.send(controller, message)
+      controller.send = this.__proto__.send.bind(this, controller)
       this.eventListeners.connection.forEach(listener => listener(controller))
       controller.send({type: 'connected'})
 
