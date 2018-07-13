@@ -16,7 +16,7 @@ class SWoleClient {
     if (listen === true) this.listen()
   }
   listen() {
-    if (this.listening === true) throw new Error('SWHellServer Already Listening')
+    if (this.listening === true) throw new Error('Client Already Listening')
     this.listening = true
     this.worker.addEventListener('message', this.onMessage)
     this.send({type: "connect"})
@@ -49,6 +49,7 @@ class SWoleClient {
   }
   onMessage(event) {
     const message = parseMessage(event.data, true)
+    console.log({message})
     if (message === null) return console.warn('Client got a malformed message')
     this.eventListeners.event.forEach(listener => listener(message))
     if (message.type === 'disconnected') return this.disconnected(message)
