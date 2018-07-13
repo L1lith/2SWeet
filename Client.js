@@ -49,7 +49,6 @@ class SWoleClient {
   }
   onMessage(event) {
     const message = parseMessage(event.data, true)
-    console.log({message})
     if (message === null) return console.warn('Client got a malformed message')
     this.eventListeners.event.forEach(listener => listener(message))
     if (message.type === 'disconnected') return this.disconnected(message)

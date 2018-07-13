@@ -98,7 +98,6 @@ class SWoleServer {
     delete this.clients[client.id]
   }
   on(eventType, callback) {
-    console.log({eventType, callback})
     if (typeof eventType != 'string' || !this.eventListeners.hasOwnProperty(eventType)) throw new Error('Invalid Event Type')
     this.eventListeners[eventType].push(callback)
   }
