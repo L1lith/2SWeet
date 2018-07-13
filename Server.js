@@ -53,7 +53,8 @@ class SWoleServer {
       Object.entries(this.lastHeartbeats).forEach(([clientID, lastBeat])=>{
         const difference = now - lastBeat
         if (difference > this.heartbeatRate) {
-          this.disconnect(this.clients[clientID], "Heartbeat not recieved")
+          const client = this.clients[clientID]
+          if (client) this.disconnect(client, "Heartbeat not recieved")
         }
       })
     }, this.heartbeatRate)
@@ -93,7 +94,7 @@ class SWoleServer {
     }
   }
   disconnect(client, reason="Unknown") {
-    this.send(client, {type: "disconnected", body: reason})
+    if (client) this.send(client, {type: "disconnected", body: reason})
     delete this.lastHeartbeats[client.id]
     delete this.clients[client.id]
   }
