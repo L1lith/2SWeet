@@ -9,7 +9,7 @@ class SWoleServer {
     this.controller = controller
     this.clients = {}
     this.heartbeatRate = 1000
-    this.eventListeners = {message: [], connection: []}
+    this.eventListeners = {message: [], connection: [], event: []}
     this.heartbeatWatcher = null
     this.lastHeartbeats = {}
     this.listen()
@@ -72,7 +72,11 @@ class SWoleServer {
       this.lastHeartbeats[replyController.id] = Date.now()
     } else {
       if (!this.clients.hasOwnProperty(replyController.id)) return response({type: "error", body: "Not Connected"})
-      this.eventListeners.message.forEach(listener => listener(message, replyController))
+      if (message.type === 'message') {
+        this.eventListeners.message.forEach(listener => listener(message.body, replyController))
+      } else {
+        this.eventListeners.event.forEach(listener => listener(message, replyController))
+      }
     }
   }
   registerClient(controller, response) {
