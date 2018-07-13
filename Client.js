@@ -53,10 +53,10 @@ class SWoleClient {
     if (message === null) return console.warn('Client got a malformed message')
     this.eventListeners.event.forEach(listener => listener(message))
     if (message.type === 'disconnected') return this.disconnected(message)
-    if (message.type === 'connected') return this.connected(message)
+    if (message.type === 'connected') return this.onConnected(message)
     this.eventListeners.message.forEach(listener => listener(message.body))
   }
-  connected(message) {
+  onConnected(message) {
     this.connected = true
     this.eventListeners.connected.forEach(listener => listener(message.body))
   }
