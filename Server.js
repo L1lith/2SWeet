@@ -60,6 +60,7 @@ class TooSWeetServer {
     }, this.heartbeatRate)
   }
   onMessage(event, warn=true) {
+    if (event.source === this.controller) return // Prevent Messaging itself
     const message = parseMessage(event.data, true)
     const replyController = event.source
     if (warn && !replyController) return console.warn('Got message with no source')

@@ -1,6 +1,6 @@
 {
   "name": "2sweet",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Service Worker API connection manager",
   "main": "index.js",
   "scripts": {
