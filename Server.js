@@ -8,7 +8,8 @@ class TooSWeetServer {
     this.controller = controller
     this.clients = {}
     this.heartbeatRate = 1000
-    this.eventListeners = {message: [], connection: [], event: []}
+    this.listeners = {message: [], connection: [], event: []}
+    this.eventListeners = {}
     this.heartbeatWatcher = null
     this.lastHeartbeats = {}
     this.listen()
@@ -65,6 +66,7 @@ class TooSWeetServer {
     const response = this.__proto__.send.bind(this, replyController)
     if (!message) return response({type: "error", body: "Malformed Message"})
     if (!message.hasOwnProperty('type')) return response({type: "error", body: "Message Type Missing"})
+    if (this.eventListeners.hasOwnProperty(event.type)) this.eventListeners[event.type].forEach(listener => listener(event, replyController))
     if (message.type === 'connect') {
       this.registerClient(replyController, response)
     } else if (message.type === 'heartbeat') {
@@ -72,9 +74,9 @@ class TooSWeetServer {
     } else {
       if (!this.clients.hasOwnProperty(replyController.id)) return response({type: "error", body: "Not Connected"})
       if (message.type === 'message') {
-        this.eventListeners.message.forEach(listener => listener(message.body, replyController))
+        this.listeners.message.forEach(listener => listener(message.body, replyController))
       } else {
-        this.eventListeners.event.forEach(listener => listener(message, replyController))
+        this.listeners.event.forEach(listener => listener(message, replyController))
       }
     }
   }
@@ -87,7 +89,7 @@ class TooSWeetServer {
       this.lastHeartbeats[controller.id] = Date.now()
       controller.send = this.__proto__.send.bind(this, controller)
       controller.send({type: 'connected'})
-      this.eventListeners.connection.forEach(listener => listener(controller))
+      this.listeners.connection.forEach(listener => listener(controller, replyController))
 
       return true
     }
@@ -98,7 +100,12 @@ class TooSWeetServer {
     delete this.clients[client.id]
   }
   on(eventType, callback) {
-    if (typeof eventType != 'string' || !this.eventListeners.hasOwnProperty(eventType)) throw new Error('Invalid Event Type')
+    if (typeof eventType != 'string' || !this.listeners.hasOwnProperty(eventType)) throw new Error('Invalid Event Type')
+    this.listeners[eventType].push(callback)
+  }
+  onEvent(eventType, callback) {
+    if (typeof eventType != 'string' || eventType.length < 1) throw new Error('Invalid Event Type')
+    if (!this.eventListeners.hasOwnProperty(eventType)) this.eventListeners[eventType] = []
     this.eventListeners[eventType].push(callback)
   }
 }

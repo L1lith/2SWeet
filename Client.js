@@ -7,7 +7,8 @@ class TooSWeetClient {
     if (!(worker instanceof ServiceWorkerContainer)) throw new Error('Invalid Worker')
     if (typeof worker.controller != 'object' || worker.controller === null) throw new Error('Worker controller invalid')
     autoBind(this)
-    this.eventListeners = {message: [], disconnected: [], connected: [], event: []}
+    this.listeners = {message: [], disconnected: [], connected: [], event: []}
+    this.eventListeners = {}
     this.worker = worker
     this.connected = false
     this.listening = false
@@ -44,25 +45,31 @@ class TooSWeetClient {
     this.worker.controller.postMessage(message)
   }
   on(eventType, callback) {
-    if (typeof eventType != 'string' || !this.eventListeners.hasOwnProperty(eventType)) throw new Error('Invalid Event Type')
+    if (typeof eventType != 'string' || !this.listeners.hasOwnProperty(eventType)) throw new Error('Invalid Event Type')
+    this.listeners[eventType].push(callback)
+  }
+  onEvent(eventType, callback) {
+    if (typeof eventType != 'string' || eventType.length < 1) throw new Error('Invalid Event Type')
+    if (!this.eventListeners.hasOwnProperty(eventType)) this.eventListeners[eventType] = []
     this.eventListeners[eventType].push(callback)
   }
   onMessage(event) {
     const message = parseMessage(event.data, true)
     if (message === null) return console.warn('Client got a malformed message')
-    this.eventListeners.event.forEach(listener => listener(message))
     if (message.type === 'disconnected') return this.disconnected(message)
     if (message.type === 'connected') return this.onConnected(message)
-    this.eventListeners.message.forEach(listener => listener(message.body))
+    this.listeners.event.forEach(listener => listener(message))
+    this.listeners.message.forEach(listener => listener(message.body))
+    if (this.eventListeners.hasOwnProperty(event.type)) this.eventListeners[event.type].forEach(listener => listener(message))
   }
   onConnected(message) {
     this.connected = true
-    this.eventListeners.connected.forEach(listener => listener(message.body))
+    this.listeners.connected.forEach(listener => listener(message.body))
   }
   disconnected(message) {
     this.connected = false
     this.close()
-    this.eventListeners.disconnected.forEach(listener => listener(message.body))
+    this.listeners.disconnected.forEach(listener => listener(message.body))
   }
 }
 
