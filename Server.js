@@ -1,7 +1,7 @@
 const parseMessage = require('./parseMessage')
 const autoBind = require('./autoBind')
 
-class SWSWeetServer {
+class TooSWeetServer {
   constructor(controller, listening=true) {
     autoBind(this)
     this.listening = false
