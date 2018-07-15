@@ -1,7 +1,7 @@
 const parseMessage = require('./parseMessage')
 const autoBind = require('./autoBind')
 
-class SWoleServer {
+class SWSWeetServer {
   constructor(controller, listening=true) {
     autoBind(this)
     this.listening = false
@@ -103,4 +103,4 @@ class SWoleServer {
   }
 }
 
-module.exports = SWoleServer
+module.exports = TooSWeetServer

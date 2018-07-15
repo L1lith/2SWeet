@@ -1,7 +1,7 @@
 const parseMessage = require('./parseMessage')
 const autoBind = require('./autoBind')
 
-class SWoleClient {
+class TooSWeetClient {
   constructor(worker, listen=true) {
     if (worker === undefined && window && window.navigator && window.navigator.serviceWorker) worker = window.navigator.serviceWorker
     if (!(worker instanceof ServiceWorkerContainer)) throw new Error('Invalid Worker')
@@ -66,4 +66,4 @@ class SWoleClient {
   }
 }
 
-module.exports = SWoleClient
+module.exports = TooSWeetClient
