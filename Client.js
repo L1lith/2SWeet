@@ -60,7 +60,7 @@ class TooSWeetClient {
     if (message.type === 'connected') return this.onConnected(message)
     this.listeners.event.forEach(listener => listener(message))
     this.listeners.message.forEach(listener => listener(message.body))
-    if (this.eventListeners.hasOwnProperty(event.type)) this.eventListeners[event.type].forEach(listener => listener(message))
+    if (this.eventListeners.hasOwnProperty(message.type)) this.eventListeners[message.type].forEach(listener => listener(message))
   }
   onConnected(message) {
     this.connected = true

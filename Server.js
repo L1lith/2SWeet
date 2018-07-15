@@ -66,7 +66,7 @@ class TooSWeetServer {
     const response = this.__proto__.send.bind(this, replyController)
     if (!message) return response({type: "error", body: "Malformed Message"})
     if (!message.hasOwnProperty('type')) return response({type: "error", body: "Message Type Missing"})
-    if (this.eventListeners.hasOwnProperty(event.type)) this.eventListeners[event.type].forEach(listener => listener(event, replyController))
+    if (this.eventListeners.hasOwnProperty(message.type)) this.eventListeners[message.type].forEach(listener => listener(message, replyController))
     if (message.type === 'connect') {
       this.registerClient(replyController, response)
     } else if (message.type === 'heartbeat') {
