@@ -86,8 +86,8 @@ class SWSWeetServer {
       this.clients[controller.id] = controller
       this.lastHeartbeats[controller.id] = Date.now()
       controller.send = this.__proto__.send.bind(this, controller)
-      this.eventListeners.connection.forEach(listener => listener(controller))
       controller.send({type: 'connected'})
+      this.eventListeners.connection.forEach(listener => listener(controller))
 
       return true
     }
