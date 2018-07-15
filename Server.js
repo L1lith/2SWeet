@@ -59,11 +59,11 @@ class SWoleServer {
       })
     }, this.heartbeatRate)
   }
-  onMessage(event) {
+  onMessage(event, warn=true) {
     const message = parseMessage(event.data, true)
     const replyController = event.source
-    if (!replyController) return console.warn('Got message with no source')
-    const response = messageSender(replyController)
+    if (warn && !replyController) return console.warn('Got message with no source')
+    const response = this.__proto__.send.bind(this, replyController)
     if (!message) return response({type: "error", body: "Malformed Message"})
     if (!message.hasOwnProperty('type')) return response({type: "error", body: "Message Type Missing"})
     if (message.type === 'connect') {
