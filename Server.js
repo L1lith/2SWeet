@@ -1,5 +1,4 @@
 const parseMessage = require('./parseMessage')
-const messageSender = require('./messageSender')
 const autoBind = require('./autoBind')
 
 class SWoleServer {
