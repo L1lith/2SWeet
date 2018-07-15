@@ -54,7 +54,6 @@ class TooSWeetClient {
     this.eventListeners[eventType].push(callback)
   }
   onMessage(event) {
-    if (event.source === this.worker.controller) return // Prevent Messaging itself
     const message = parseMessage(event.data, true)
     if (message === null) return console.warn('Client got a malformed message')
     if (message.type === 'disconnected') return this.disconnected(message)
